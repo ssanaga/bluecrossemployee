@@ -18,6 +18,7 @@ import "./App.css";
 // fontawesome
 import initFontAwesome from "./utils/initFontAwesome";
 import PasswordResetPage from "./components/PasswordReset";
+import ForgotUsername from "./components/ForgotUsername";
 initFontAwesome();
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="/external-api" component={ExternalApi} />
             <Route path="/register" component={Register} />
             <Route path="/passwordreset" component={PasswordResetPage} />
+            <Route path="/forgotusername" component={ForgotUsername} />
           </Switch>
         </Container>
         <Footer />
