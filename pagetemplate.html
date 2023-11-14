@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    {%- auth0:head -%}
+
+    <link rel="icon" href="https://secure.blueprintforarkansasemployers.com/assets/images/favicon-32x32.png"
+        type="image/png" />
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.1.0/dist/css/bootstrap.min.css" />
+
+    {% if application.name == 'BCBS Member Portal' %}
+    <style>
+        body {
+            background-image: url('https://myblueprint.arkansasbluecross.com/login/oidc/assets/images/login-bg.png');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #custom-prompt-logo {
+            background-image: url('https://myblueprint.arkansasbluecross.com/login/oidc/assets/images/logo-login.png ');
+
+        }
+    </style>
+    {% endif %}
+    {% if application.name == 'BCBS Employee Portal' %}
+    <style>
+        body {
+            background-image: url('https://secure.blueprintforarkansasemployers.com/assets/images/background-login.jpg');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #custom-prompt-logo {
+            background-image: url('https://ssowmya.s3.us-east-2.amazonaws.com/BCBSEmployeeLogo.png');
+
+        }
+    </style>
+    {% endif %}
+
+    <title>{{ prompt.screen.texts.pageTitle }}</title>
+</head>
+
+<body class="_widget-auto-layout _use-custom-prompt-logo">
+
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="p-2">{%- auth0:widget -%}</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function generateRegisterURL() {
+
+            /**
+            * Should be the only link in the login widget.
+            * Because of the way the widget is built, there's no other way to get it. :(
+            */
+            let linkAnchors = [...document.querySelectorAll('main a')]
+            let registerElement = linkAnchors.find(item => item.getAttribute("href").startsWith('/u/signup'))
+
+            if (!!registerElement) {
+                /**
+                * This template is used for any page during the login flow from Auth0,
+                * from credentials to MFA. Meaning that it won't find any node
+                * elsewhere than the login page.
+                */
+                let appName = "{{application.name}}";
+                let newLink;
+
+                if (appName === 'BCBS Member Portal') {
+                    newLink = 'https://www.blueprintportal.com/register';
+                } else if (appName === 'BCBS Employee Portal') {
+                    newLink = 'https://secure.blueprintforarkansasemployers.com/Login/RegistrationInfo.aspx';
+                }
+
+
+
+
+                // Remove underline and apply the same class as the button
+                registerElement.style.textDecoration = 'none';
+                registerElement.setAttribute('href', newLink)
+            }
+        }
+        generateRegisterURL()
+
+        function generateLinks() {
+            // Find the button with the value "Forgot Password"
+            const forgotPasswordButton = document.querySelector('button[value="forgot-password"]');
+
+            // Get application name
+            let appName = "{{application.name}}";
+
+            // Create a new anchor (link) element for "Forgot Password"
+            const forgotPasswordLink = document.createElement('a');
+            forgotPasswordLink.textContent = 'Forgot Password?'; // Set the link text
+            forgotPasswordLink.className = forgotPasswordButton.className; // Copy classes from the button
+            forgotPasswordLink.style.textDecoration = 'none'; // Remove the underline
+
+            // Set the href for "Forgot Password" based on appName
+            if (appName === 'BCBS Member Portal') {
+                forgotPasswordLink.href = 'https://myblueprint.arkansasbluecross.com/login/oidc/forgotpasswordOtp.aspx';
+            } else if (appName === 'BCBS Employee Portal') {
+                forgotPasswordLink.href = 'https://secure.blueprintforarkansasemployers.com/Login/ForgotPwd.aspx';
+            }
+            // Additional conditions can be added here for different apps
+
+            // Insert the new "Forgot Password" link at the position of the original button
+            const parentElement = forgotPasswordButton.parentNode;
+            parentElement.insertBefore(forgotPasswordLink, forgotPasswordButton);
+
+            // Create a new anchor (link) element for "Forgot Username"
+            const forgotUsernameLink = document.createElement('a');
+            forgotUsernameLink.textContent = 'Forgot username?'; // Set the link text
+            forgotUsernameLink.className = forgotPasswordButton.className; // Copy classes from the button
+            forgotUsernameLink.style.textDecoration = 'none'; // Remove the underline
+
+            // Set the href for "Forgot Username" based on appName
+            if (appName === 'BCBS Member Portal') {
+                forgotUsernameLink.href = 'https://myblueprint.arkansasbluecross.com/login/oidc/forgot_username.aspx';
+            } else if (appName === 'BCBS Employee Portal') {
+                forgotUsernameLink.href = 'https://secure.blueprintforarkansasemployers.com/Login/ForgotLoginId.aspx';
+            }
+
+            // Create a new paragraph element to contain the "Forgot Username" link
+            const paragraphUsername = document.createElement('p');
+            paragraphUsername.appendChild(forgotUsernameLink);
+
+            // Insert the "Forgot Username" link after the new "Forgot Password" link
+            parentElement.insertBefore(paragraphUsername, forgotPasswordLink.nextSibling);
+
+            // Remove the original "Forgot Password" button from the DOM
+            parentElement.removeChild(forgotPasswordButton);
+        }
+
+        generateLinks();
+
+
+
+    </script>
+
+</body>
+
+</html>
